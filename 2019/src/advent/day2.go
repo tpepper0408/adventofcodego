@@ -1,24 +1,25 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
+
+	"./utils"
 )
 
-func main() {
-	lines := readFile("input")
+func day2() {
+	lines := utils.ReadFile("Day2/input")
 	instructions := readLine(lines[0])
-	partOne(instructions)
-	partTwo(instructions)
+	day2PartOne(instructions)
+	day2PartTwo(instructions)
 }
 
-func partOne(instructions []int) {
+func day2PartOne(instructions []int) {
 	fmt.Println("Starting program:", instructions)
 
-	tempInstructions := deepCopy(instructions)
+	tempInstructions := utils.DeepCopyInt(instructions)
 	tempInstructions[1] = 12
 	tempInstructions[2] = 2
 	fmt.Println("Applied 1202 program alarm")
@@ -27,7 +28,7 @@ func partOne(instructions []int) {
 	fmt.Println("Value in position 0: ", finishedProgram[0])
 }
 
-func partTwo(instructions []int) {
+func day2PartTwo(instructions []int) {
 	fmt.Println("--- Part Two ---")
 	fmt.Println("Looking for: ", 19690720)
 
@@ -39,7 +40,7 @@ func partTwo(instructions []int) {
 }
 
 func runWithReplacedValues(program []int, noun int, verb int) {
-	tempInstructions := deepCopy(program)
+	tempInstructions := utils.DeepCopyInt(program)
 	tempInstructions[1] = noun
 	tempInstructions[2] = verb
 	finishedProgram := runProgram(tempInstructions)
@@ -47,14 +48,6 @@ func runWithReplacedValues(program []int, noun int, verb int) {
 		fmt.Println("Found values: noun - ", noun, " verb - ", verb)
 		os.Exit(0)
 	}
-}
-
-func deepCopy(original []int) []int {
-	copy := make([]int, len(original))
-	for i, originalValue := range original {
-		copy[i] = originalValue
-	}
-	return copy
 }
 
 func runProgram(program []int) []int {
@@ -85,19 +78,4 @@ func readLine(line string) []int {
 		intInstructions = append(intInstructions, int(intValue))
 	}
 	return intInstructions
-}
-
-func readFile(fileName string) []string {
-	file, err := os.Open(fileName)
-	if err != nil {
-		fmt.Println("Error:", err)
-		os.Exit(1)
-	}
-
-	lines := []string{}
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	return lines
 }

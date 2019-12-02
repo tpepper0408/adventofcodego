@@ -1,20 +1,21 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"strconv"
+
+	"./utils"
 )
 
-func main() {
+func day1() {
 	fmt.Println("--- Day 1: The Tyranny of the Rocket Equation ---")
-	lines := readFile("input")
-	partOne(lines)
-	partTwo(lines)
+	lines := utils.ReadFile("Day1/input")
+	day1PartOne(lines)
+	day1PartTwo(lines)
 }
 
-func partOne(lines []string) {
+func day1PartOne(lines []string) {
 	fmt.Println("Part One...")
 	var totalValue int
 	for _, line := range lines {
@@ -31,7 +32,7 @@ func partOne(lines []string) {
 	fmt.Println("Total:", totalValue)
 }
 
-func partTwo(lines []string) {
+func day1PartTwo(lines []string) {
 	fmt.Println("--- Part Two ---")
 	var totalValue int
 	for _, line := range lines {
@@ -57,19 +58,4 @@ func calculateFuelValue(massValue int) int {
 		}
 	}
 	return massValue
-}
-
-func readFile(fileName string) []string {
-	file, err := os.Open(fileName)
-	if err != nil {
-		fmt.Println("Error:", err)
-		os.Exit(1)
-	}
-
-	lines := []string{}
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	return lines
 }
