@@ -38,7 +38,23 @@ func dayThreePartOne(crossingSections []coordinate) {
 }
 
 func dayThreePartTwo(paths [][]coordinate, crossingSections []coordinate) {
+	var numberOfSteps []int
+	for _, crossingCoordinate := range crossingSections {
+		numberOfStepsForCrossing := 0
+		for _, path := range paths {
+			for i, step := range path {
+				if step.x == crossingCoordinate.x &&
+					step.y == crossingCoordinate.y {
+					numberOfStepsForCrossing = numberOfStepsForCrossing + i
+					continue
+				}
+			}
+		}
+		numberOfSteps = append(numberOfSteps, numberOfStepsForCrossing)
+	}
 
+	minSteps := utils.FindMin(numberOfSteps)
+	fmt.Println("Minimum steps:", minSteps)
 }
 
 func processLine(line string, path int) []coordinate {
