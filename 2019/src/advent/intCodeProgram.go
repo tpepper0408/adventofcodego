@@ -24,53 +24,42 @@ const param1 int = 2
 const param2 int = 3
 const param3 int = 4
 
-func (program intCodeProgram) runProgram(initialInput int) []int {
+func (program intCodeProgram) runProgram(initialInput []int) (int, bool) {
 	return program.runProgramOptionalDebug(initialInput, false)
 }
-func (program intCodeProgram) runProgramOptionalDebug(initialInput int, debug bool) []int {
+func (program intCodeProgram) runProgramOptionalDebug(initialInput []int, debug bool) (int, bool) {
 	nextIndex := 0
+	inputIndex := 0
+	output := -1
+	terminated := false
 	for index := 0; true; index = nextIndex {
 		opCode := program[index]
 		if debug {
 			fmt.Println("Opcode:", opCode)
 		}
+		if opCode < 0 {
+			panic("Opcode should never be negative")
+		}
+
 		if isOperation(opCode, operationAdd) {
-			if debug {
-				fmt.Println("Got op 1 (addition)")
-			}
 			p1 := program[index+1]
 			if isPositionMode(opCode, param1) {
-				if debug {
-					fmt.Println("Immediate mode param 1")
-				}
 				p1 = program[program[index+1]]
 			}
 			p2 := program[index+2]
 			if isPositionMode(opCode, param2) {
-				if debug {
-					fmt.Println("Immediate mode param 2")
-				}
 				p2 = program[program[index+2]]
 			}
 			valueToInsert := p1 + p2
 			nextIndex = nextIndex + 4
 			program[program[index+3]] = valueToInsert
 		} else if isOperation(opCode, operationMultiply) {
-			if debug {
-				fmt.Println("Got op 2 (multiplication)")
-			}
 			p1 := program[index+1]
 			if isPositionMode(opCode, param1) {
-				if debug {
-					fmt.Println("Position mode param 1")
-				}
 				p1 = program[program[index+1]]
 			}
 			p2 := program[index+2]
 			if isPositionMode(opCode, param2) {
-				if debug {
-					fmt.Println("Position mode param 2")
-				}
 				p2 = program[program[index+2]]
 			}
 			valueToInsert := p1 * p2
@@ -81,8 +70,9 @@ func (program intCodeProgram) runProgramOptionalDebug(initialInput int, debug bo
 				fmt.Println("Got op 3 (value input)")
 			}
 			whereToStore := program[index+1]
-			program[whereToStore] = initialInput
-			fmt.Println("Input:", initialInput, " to position ", whereToStore)
+			program[whereToStore] = initialInput[inputIndex]
+			fmt.Println("Input:", initialInput[inputIndex], " to position ", whereToStore)
+			inputIndex++
 			nextIndex = nextIndex + 2
 		} else if isOperation(opCode, operationOutput) {
 			if debug {
@@ -92,6 +82,8 @@ func (program intCodeProgram) runProgramOptionalDebug(initialInput int, debug bo
 			if isPositionMode(opCode, param1) {
 				out = program[program[index+1]]
 			}
+			inputIndex = 0
+			output = out
 			fmt.Println("Output:", out)
 			nextIndex = nextIndex + 2
 		} else if isOperation(opCode, operationJumpIfTrue) {
@@ -156,15 +148,19 @@ func (program intCodeProgram) runProgramOptionalDebug(initialInput int, debug bo
 			nextIndex = nextIndex + 4
 		} else if opCode == 99 {
 			if debug {
-				fmt.Println("Exiting")
+				fmt.Println("Terminated")
 			}
+			terminated = true
 			break
 		} else {
-			fmt.Println("Opcode:", opCode)
 			panic("BOOM")
 		}
 	}
-	return program
+
+	if output == -1 {
+		output = program[0]
+	}
+	return output, terminated
 }
 
 func isPositionMode(toCheck int, paramIndex int) bool {
