@@ -21,9 +21,9 @@ func day2PartOne(instructions []int) int {
 	tempInstructions[2] = 2
 	fmt.Println("Applied 1202 program alarm")
 
-	finishedProgram := intCodeProgram(tempInstructions).runProgram(0)
-	fmt.Println("Value in position 0: ", finishedProgram[0])
-	return finishedProgram[0]
+	finishedProgram, _ := intCodeProgram(tempInstructions).runProgram([]int{0})
+	fmt.Println("Value in position 0: ", finishedProgram)
+	return finishedProgram
 }
 
 func day2PartTwo(instructions []int) (int, int) {
@@ -45,8 +45,8 @@ func runWithReplacedValues(program []int, noun int, verb int) bool {
 	tempInstructions := utils.DeepCopyInt(program)
 	tempInstructions[1] = noun
 	tempInstructions[2] = verb
-	finishedProgram := intCodeProgram(tempInstructions).runProgram(0)
-	if finishedProgram[0] == 19690720 {
+	finishedProgram, _ := intCodeProgram(tempInstructions).runProgram([]int{0})
+	if finishedProgram == 19690720 {
 		fmt.Println("Found values: noun - ", noun, " verb - ", verb)
 		return true
 	}

@@ -13,9 +13,9 @@ func day5() {
 }
 
 func day5PartOne(programToRun intCodeProgram) {
-	programToRun.runProgramOptionalDebug(1, true)
+	programToRun.runProgram([]int{1})
 }
 
 func day5PartTwo(programToRun intCodeProgram) {
-	programToRun.runProgramOptionalDebug(5, true)
+	programToRun.runProgram([]int{5})
 }
