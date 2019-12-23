@@ -6,7 +6,7 @@ import (
 
 func day5() {
 	lines := utils.ReadFile("Day5/input")
-	program := readInstructionLine(lines[0])
+	program := utils.ReadStringLineToIntArray(lines[0])
 	programToRun := intCodeProgram(program)
 	day5PartOne(programToRun)
 	day5PartTwo(programToRun)

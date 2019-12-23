@@ -8,7 +8,7 @@ import (
 
 func day7() {
 	lines := utils.ReadFile("Day7/input")
-	program := intCodeProgram(readInstructionLine(lines[0]))
+	program := intCodeProgram(utils.ReadStringLineToIntArray(lines[0]))
 	day7PartOne(program)
 	day7PartTwo(program)
 }

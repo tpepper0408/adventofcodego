@@ -2,9 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
 
 	"./utils"
 )
@@ -197,20 +194,6 @@ func isOperation(toCheck int, op int) bool {
 	}
 	o := utils.GetIntAsArrayOfInts(toCheck)
 	return o[len(o)-1] == op
-}
-
-func readInstructionLine(line string) []int {
-	instructions := strings.Split(line, ",")
-	var intInstructions []int
-	for _, instruction := range instructions {
-		intValue, err := strconv.ParseInt(instruction, 10, 64)
-		if err != nil {
-			fmt.Println("Error:", err)
-			os.Exit(1)
-		}
-		intInstructions = append(intInstructions, int(intValue))
-	}
-	return intInstructions
 }
 
 func (program intCodeProgram) printCurrentState() {

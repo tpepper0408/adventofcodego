@@ -8,7 +8,7 @@ import (
 
 func day2() {
 	lines := utils.ReadFile("Day2/input")
-	instructions := readInstructionLine(lines[0])
+	instructions := utils.ReadStringLineToIntArray(lines[0])
 	day2PartOne(instructions)
 	day2PartTwo(instructions)
 }
