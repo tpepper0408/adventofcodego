@@ -24,15 +24,27 @@ const param1 int = 2
 const param2 int = 3
 const param3 int = 4
 
-func (program intCodeProgram) runProgram(initialInput []int) (int, bool) {
+func (program intCodeProgram) runProgram(initialInput []int) (int, bool, int) {
 	return program.runProgramOptionalDebug(initialInput, false)
 }
-func (program intCodeProgram) runProgramOptionalDebug(initialInput []int, debug bool) (int, bool) {
+func (program intCodeProgram) runProgramOptionalDebug(initialInput []int, debug bool) (int, bool, int) {
+	return program.runProgramOptionalDebugAndStartingIndex(initialInput, debug, -1)
+}
+func (program intCodeProgram) runProgramOptionalDebugAndStartingIndex(initialInput []int, debug bool, startingIndex int) (int, bool, int) {
 	nextIndex := 0
+	startingIndexToUse := 0
+	if startingIndex != -1 {
+		nextIndex = startingIndex
+		startingIndexToUse = startingIndex
+	}
 	inputIndex := 0
 	output := -1
 	terminated := false
-	for index := 0; true; index = nextIndex {
+	if debug {
+		fmt.Println("Start. InitialInput:", initialInput, ", StartingIndex:", startingIndexToUse)
+	}
+
+	for index := startingIndexToUse; true; index = nextIndex {
 		opCode := program[index]
 		if debug {
 			fmt.Println("Opcode:", opCode)
@@ -86,6 +98,7 @@ func (program intCodeProgram) runProgramOptionalDebug(initialInput []int, debug 
 			output = out
 			fmt.Println("Output:", out)
 			nextIndex = nextIndex + 2
+			break
 		} else if isOperation(opCode, operationJumpIfTrue) {
 			toCheck := program[index+1]
 			if isPositionMode(opCode, param1) {
@@ -96,7 +109,6 @@ func (program intCodeProgram) runProgramOptionalDebug(initialInput []int, debug 
 				if isPositionMode(opCode, param2) {
 					valueToInsert = program[program[index+2]]
 				}
-				program[index] = valueToInsert
 				nextIndex = valueToInsert
 			} else {
 				nextIndex = nextIndex + 3
@@ -111,7 +123,6 @@ func (program intCodeProgram) runProgramOptionalDebug(initialInput []int, debug 
 				if isPositionMode(opCode, param2) {
 					valueToInsert = program[program[index+2]]
 				}
-				program[index] = valueToInsert
 				nextIndex = valueToInsert
 			} else {
 				nextIndex = nextIndex + 3
@@ -157,10 +168,13 @@ func (program intCodeProgram) runProgramOptionalDebug(initialInput []int, debug 
 		}
 	}
 
-	if output == -1 {
-		output = program[0]
+	// if output == -1 {
+	// 	output = program[0]
+	// }
+	if debug {
+		fmt.Println("Output:", output, " Terminated:", terminated, " NextIndex:", nextIndex)
 	}
-	return output, terminated
+	return output, terminated, nextIndex
 }
 
 func isPositionMode(toCheck int, paramIndex int) bool {
@@ -197,4 +211,13 @@ func readInstructionLine(line string) []int {
 		intInstructions = append(intInstructions, int(intValue))
 	}
 	return intInstructions
+}
+
+func (program intCodeProgram) printCurrentState() {
+	fmt.Println("Current state:")
+	fmt.Println(program)
+	for i, v := range program {
+		fmt.Printf("%v:%v,", i, v)
+	}
+	fmt.Println()
 }
